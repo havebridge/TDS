@@ -15,7 +15,7 @@ public:
 
 	Stack(int size) : data(new T[size]), top(0), size(size) {}
 
-	Stack(const Stack& other)
+	Stack(const Stack& other) // shallow copy
 	{
 		assert(other.data != nullptr);
 
@@ -28,7 +28,7 @@ public:
 		}
 	}
 
-	Stack& operator=(const Stack& other)
+	Stack& operator=(const Stack& other) // deep copy
 	{
 		if (&other == this)
 		{
