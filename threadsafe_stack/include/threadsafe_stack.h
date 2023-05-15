@@ -1,9 +1,11 @@
+#pragma once
 #include "stack.h"
 
 #include <thread>
 #include <mutex>
 
 #include <vector>
+#include <stack>
 
 #include <algorithm>
 
@@ -14,7 +16,7 @@ private:
 	Stack<T> data;
 	mutable std::mutex mt;
 public:
-	Threadsafe_stack() : data(10) {}
+	Threadsafe_stack() = default;
 
 	Threadsafe_stack(const Threadsafe_stack& other)
 	{

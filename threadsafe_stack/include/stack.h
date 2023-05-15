@@ -9,13 +9,21 @@ class Stack
 private:
 	T* data;
 	T top;
-	uint8_t size;
+	int size;
 public:
-	Stack() : data(new T[1024]), top(0), size(1024) {}
+	explicit Stack() noexcept 
+		: 
+		data(new T[1024]), 
+		top(0), 
+		size(1024) {}
 
-	Stack(int size) : data(new T[size]), top(0), size(size) {}
+	explicit Stack(int size) noexcept
+		: 
+		data(new T[size]), 
+		top(0), 
+		size(size) {}
 
-	Stack(const Stack& other) // shallow copy
+	Stack(const Stack& other) noexcept // shallow copy
 	{
 		assert(other.data != nullptr);
 
@@ -28,7 +36,7 @@ public:
 		}
 	}
 
-	Stack& operator=(const Stack& other) // deep copy
+	Stack& operator=(const Stack& other) noexcept // deep copy
 	{
 		if (&other == this)
 		{
@@ -52,12 +60,14 @@ public:
 		}
 	}
 
+
+
 	~Stack()
 	{
 		delete[] data;
 	}
 public:
-	void push(const T new_data)
+	void push(const T& new_data)
 	{
 		assert(top <= size);
 		data[top++] = new_data;
@@ -69,15 +79,21 @@ public:
 		return data[top--];
 	}
 
-	T peek() const
+	[[nodiscard]] T peek() const noexcept
 	{
 		return top;
 	}
 
-	bool isEmpty() const
+	[[nodiscard]] bool isEmpty() const noexcept
 	{
 		return top == 0;
 	}
+
+	[[nodiscard]] size_t getsize() const noexcept
+	{
+		return size;
+	}
+
 
 	void print() const
 	{
@@ -86,6 +102,5 @@ public:
 		{
 			std::cout << data[i] << '\n';
 		}
-		std::cout << '\n';
 	}
 };
