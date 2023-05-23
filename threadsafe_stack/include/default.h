@@ -1,4 +1,4 @@
 #pragma once
 
-#include "../test/quicksort.cpp"
-#include "../test/threadsafe_stack.cpp"
+#include "../test/quicksort.h"
+#include "../test/threadsafe_stack.h"
