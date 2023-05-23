@@ -4,6 +4,7 @@
 #include <list>
 #include <future>
 #include <atomic>
+#include <algorithm>
 
 template<typename T>
 class Quicksort
@@ -19,6 +20,7 @@ private:
 	std::vector<std::thread> threads;
 	unsigned char max_thread_count;
 	std::atomic<bool> end_of_data;
+
 public:
 	Quicksort()
 		:
@@ -34,6 +36,7 @@ public:
 			threads[i].join();
 		}
 	}
+
 public:
 	void try_sort_chunk()
 	{
@@ -53,18 +56,20 @@ public:
 		}
 
 		std::list<T> result;
+
 		result.splice(result.begin(), chunk_data, chunk_data.begin());
 		T const& pivot = *result.begin();
+
 		typename std::list<T>::iterator divide_point = std::partition(chunk_data.begin(), chunk_data.end(), [&](T const& val) {
 			return val < pivot;
 			});
 
 		chunk_to_sort new_lower_chunk;
-		new_lower_chunk.data.splice(new_lower_chunk.data.end(),
-			chunk_data, chunk_data.begin(), divide_point);
+		new_lower_chunk.data.splice(new_lower_chunk.data.end(), chunk_data, chunk_data.begin(), divide_point);
 
 		std::future<std::list<T>> new_lower = new_lower_chunk.promise.get_future();
 		chunks.push(std::move(new_lower_chunk));
+
 		if (threads.size() < max_thread_count)
 		{
 			threads.push_back(std::thread(&Quicksort<T>::sort_thread, this));

@@ -3,6 +3,9 @@
 #include <iostream>
 #include <cassert>
 
+#define StackTest 
+//#define QuicksortTest
+
 template <typename T>
 class Stack
 {
@@ -60,6 +63,10 @@ public:
 		}
 	}
 
+	Stack operator<=(int data)
+	{
+		return this.size <= data;
+	}
 
 
 	~Stack()
@@ -69,7 +76,7 @@ public:
 public:
 	void push(const T& new_data)
 	{
-		assert(top <= size);
+		assert(this->top <= this->size);
 		data[top++] = new_data;
 	}
 

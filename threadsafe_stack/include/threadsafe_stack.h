@@ -13,10 +13,15 @@ template<typename T>
 class Threadsafe_stack
 {
 private:
+#ifdef StackTest
 	Stack<T> data;
+#endif
+#ifdef QuicksortTest
+	std::stack<T> data;
+#endif
 	mutable std::mutex mt;
 public:
-	Threadsafe_stack() = default;
+	Threadsafe_stack() : data() {}
 
 	Threadsafe_stack(const Threadsafe_stack& other)
 	{
@@ -36,7 +41,12 @@ public:
 	std::shared_ptr<T> pop()
 	{
 		std::lock_guard<std::mutex> lock(mt);
+#ifdef StackTest
 		std::shared_ptr<T> res(std::make_shared<T>(std::move(data.peek())));
+#endif
+#ifdef QuicksortTest
+		std::shared_ptr<T> res(std::make_shared<T>(std::move(data.top())));
+#endif
 		data.pop();
 		return res;
 	}
@@ -47,9 +57,11 @@ public:
 		return data.isEmpty();
 	}
 
+#ifdef StackTest
 	void print() const
 	{
 		std::lock_guard<std::mutex> lock(mt);
 		data.print();
 	}
+#endif
 };
