@@ -88,7 +88,7 @@ public:
 
 	[[nodiscard]] T peek() const noexcept
 	{
-		return top;
+		return data[top];
 	}
 
 	[[nodiscard]] bool isEmpty() const noexcept
@@ -96,7 +96,7 @@ public:
 		return top == 0;
 	}
 
-	[[nodiscard]] size_t getsize() const noexcept
+	[[nodiscard]] size_t getSize() const noexcept
 	{
 		return size;
 	}
