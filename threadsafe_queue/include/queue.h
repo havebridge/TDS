@@ -2,10 +2,10 @@
 
 #include <iostream>
 #include <cassert>
-//#include <queue>
 #include <utility>
-
-//std::queue<int> q;
+#include <thread>
+#include <vector>
+#include <algorithm>
 
 
 template<typename T>
@@ -26,7 +26,7 @@ public:
 		tail(0),
 		capacity(1024),
 		size(0) {}
-	
+
 	explicit Queue(int size) noexcept
 		:
 		data(new T[size]),
@@ -59,7 +59,7 @@ public:
 		}
 
 		delete[] data;
-		
+
 		if (other.data)
 		{
 			data = new T[capacity];
@@ -103,7 +103,7 @@ public:
 		size++;
 	}
 
-	T Dequeue() 
+	T Dequeue()
 	{
 		if (isEmpty())
 		{
@@ -139,7 +139,7 @@ public:
 	{
 		return size == 0;
 	}
-	
+
 	[[nodiscard]] bool isFull() const noexcept
 	{
 		return size == capacity;
@@ -152,9 +152,7 @@ public:
 		{
 			std::cout << data[i] << '\n';
 		}
-		std::cout << "head: " << head << '\n';
-		std::cout << "tail: " << tail << '\n';
-
-		//std::cout << '\n';
+		std::cout << "head: " << data[head] << '\n';
+		std::cout << "tail: " << data[tail] << '\n';
 	}
 };
