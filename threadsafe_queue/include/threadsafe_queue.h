@@ -1,12 +1,8 @@
 #pragma once
 
-#include <iostream>
+#include "default.h"
+#include "thread_pool.h"
 
-#include <utility>
-
-#include <thread>
-#include <mutex>
-#include <condition_variable>
 
 template<typename T>
 class Threadsafe_queue
@@ -22,7 +18,9 @@ private:
 	node* tail;
 
 	mutable	std::mutex head_mutex;
-	std::mutex tail_mutex;
+	mutable std::mutex tail_mutex;
+	mutable std::shared_mutex print_mutex;
+
 	std::condition_variable cv;
 
 private:
@@ -31,6 +29,12 @@ private:
 	{
 		std::lock_guard<std::mutex> tail_lock(tail_mutex);
 		return tail;
+	}
+
+	node* getHead() const noexcept
+	{
+		std::lock_guard<std::mutex> head_lock(head_mutex);
+		return head.get();
 	}
 
 	std::unique_ptr<node> popHead()
@@ -105,7 +109,7 @@ public:
 			node* const new_tail = p.get();
 			std::lock_guard<std::mutex> tail_lock(tail_mutex);
 			tail->data = std::move(new_data);
-			tail->next = p.get();
+			tail->next = std::move(p);
 			tail = new_tail;
 		}
 		
@@ -135,5 +139,20 @@ public:
 	{
 		std::lock_guard<std::mutex> head_lock(head_mutex);
 		return head.get() != getTail();
+	}
+
+	void print() const noexcept
+	{
+		std::cout << "Queue:\n";
+
+		std::lock_guard<std::shared_mutex> print_lock(print_mutex);
+		node* n = getHead();
+
+		while (n->next != nullptr)
+		{
+			std::cout << *n->data << '\n';
+			n = n->next.get();
+		}
+		std::cout << '\n';
 	}
 };
