@@ -28,15 +28,17 @@ namespace ThreadsafeQueueTest
 
 
 	template <typename T>
-	std::shared_ptr<T> inline testTryPop(Threadsafe_queue<T>& queue)
+	bool inline testTryPop(Threadsafe_queue<T>& queue)
 	{
-		return queue.tryPop();
+		std::shared_ptr<T> res = queue.tryPop();
+		return res == nullptr;
 	}
 
 
 	template <typename T>
-	std::shared_ptr<T> inline testWaitAndPop(Threadsafe_queue<T>& queue)
+	bool inline testWaitAndPop(Threadsafe_queue<T>& queue)
 	{
-		return queue.waitAndPop();
+		std::shared_ptr<T> res = queue.waitAndPop();
+		return res == nullptr;
 	}
 }
