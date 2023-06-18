@@ -39,9 +39,9 @@ private:
 
 	std::unique_ptr<node> popHead()
 	{
-		std::unique_ptr<node> res(std::move(head));
-		head = std::move(res->next);
-		return res;
+		std::unique_ptr<node> old_head = std::move(head);
+		head = std::move(old_head->next);
+		return old_head;
 	}
 
 	std::unique_ptr<node> tryPopHead()
@@ -80,13 +80,13 @@ private:
 
 	std::unique_ptr<node> waitPopHead()
 	{
-		std::unique_lock<std::mutex> head_lock(head_mutex);
+		std::unique_lock<std::mutex> head_lock(waitForCondititon());
 		return popHead();
 	}
 
 	std::unique_ptr<node> waitPopHead(T& some_value)
 	{
-		std::unique_lock<std::mutex> head_lock(head_mutex);
+		std::unique_lock<std::mutex> head_lock(waitForCondititon());
 		some_value = std::move(*head->data);
 		return popHead();
 	}
@@ -123,6 +123,13 @@ public:
 		return old_head ? old_head->data : std::shared_ptr<T>();
 	}
 
+
+	bool tryPop(T& value)
+	{
+		const std::unique_ptr<node> old_head = tryPopHead(value);
+		return old_head;
+	}
+
 //	pop head when queue is not empty(head != tail)
 	std::shared_ptr<T> waitAndPop()
 	{
@@ -144,14 +151,17 @@ public:
 	void print() const noexcept
 	{
 		std::cout << "Queue:\n";
+		unsigned i = 0;
 
 		std::lock_guard<std::shared_mutex> print_lock(print_mutex);
 		node* n = getHead();
 
 		while (n->next != nullptr)
 		{
+			std::cout << '[' << i << ']';
 			std::cout << *n->data << '\n';
 			n = n->next.get();
+			i++;
 		}
 		std::cout << '\n';
 	}
