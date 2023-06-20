@@ -7,6 +7,8 @@
 #include <vector>
 #include <stack>
 
+#include <fstream>
+
 #include <algorithm>
 
 template<typename T>
@@ -20,6 +22,9 @@ private:
 	std::stack<T> data;
 #endif
 	mutable std::mutex mt;
+private:
+	friend std::ostream& operator<<(std::ostream& os, std::stack<T> stack);
+
 public:
 	Threadsafe_stack() : data() {}
 
@@ -64,4 +69,27 @@ public:
 		data.print();
 	}
 #endif
+
+#ifdef QuicksortTest
+	void print() const
+	{
+		std::lock_guard<std::mutex> lock(mt);
+		std::cout << data;
+	}
+#endif
+
 };
+
+#ifdef QuicksortTest
+template<typename T>
+std::ostream& operator<<(std::ostream& os, std::stack<T> stack) //function header
+{
+	while (!stack.empty()) //body
+	{
+		os << stack.top() << '\n';
+		stack.pop();
+	}
+
+	return os; // end of function
+}
+#endif
