@@ -82,14 +82,14 @@ public:
 
 #ifdef QuicksortTest
 template<typename T>
-std::ostream& operator<<(std::ostream& os, std::stack<T> stack) //function header
+std::ostream& operator<<(std::ostream& os, std::stack<T> stack) 
 {
-	while (!stack.empty()) //body
+	while (!stack.empty()) 
 	{
 		os << stack.top() << '\n';
 		stack.pop();
 	}
 
-	return os; // end of function
+	return os; 
 }
 #endif
